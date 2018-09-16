@@ -2,9 +2,9 @@ package org.code13k.thumbly.web.client;
 
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.code13k.thumbly.web.client.aws.AwsS3SignValue;
 import org.code13k.thumbly.web.client.model.WebData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +21,6 @@ import java.util.function.Consumer;
 public class CachedWebClient {
     // Logger
     private static final Logger mLogger = LoggerFactory.getLogger(CachedWebClient.class);
-
-    // Const
-    private static final String DEFAULT_CACHE_DIRECTORY = ".cache";
-    private static final long DEFAULT_MAX_SIZE_OF_CACHE_DIRECTORY = 1024 * 1024 * 1024 * 1; // 1GB
 
     // Data
     private Map<String, List<Consumer<String>>> mRequestMap = null;
@@ -66,7 +62,7 @@ public class CachedWebClient {
     /**
      * Get file
      */
-    public void getFile(String url, Map<String, String> headers, Consumer<String> consumer) {
+    public void getFile(String url, AwsS3SignValue awsS3SignValue, Consumer<String> consumer) {
         // Check if duplicate request is already running
         final String key = generateKey(url);
         mLogger.trace("key=" + key);
@@ -84,7 +80,7 @@ public class CachedWebClient {
         }
 
         // Request
-        mWebRequest.request(url, headers, new Consumer<String>() {
+        mWebRequest.request(url, awsS3SignValue, new Consumer<String>() {
             @Override
             public void accept(String filePath) {
                 List<Consumer<String>> consumerList = null;

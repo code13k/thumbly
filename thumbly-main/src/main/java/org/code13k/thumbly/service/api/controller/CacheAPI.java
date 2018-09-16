@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.code13k.thumbly.web.client.CachedWebClient;
 import org.code13k.thumbly.web.client.model.WebData;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class CacheAPI extends BasicAPI {

@@ -1,7 +1,6 @@
 package org.code13k.thumbly.service.api.controller;
 
 import com.google.gson.GsonBuilder;
-import io.vertx.core.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;

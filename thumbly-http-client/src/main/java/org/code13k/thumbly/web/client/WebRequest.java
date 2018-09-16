@@ -9,6 +9,8 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.code13k.thumbly.web.client.aws.AwsS3SignValue;
+import org.code13k.thumbly.web.client.aws.AwsS3SignerV4;
 import org.code13k.thumbly.web.client.model.WebData;
 import org.code13k.thumbly.web.client.model.ResponseHeaders;
 import org.slf4j.Logger;
@@ -17,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class WebRequest {
@@ -52,7 +53,7 @@ public class WebRequest {
     /**
      * Request
      */
-    public void request(String url, Map<String, String> headers, Consumer<String> consumer) {
+    public void request(String url, AwsS3SignValue awsS3SignValue, Consumer<String> consumer) {
         final long startTime = System.currentTimeMillis();
         final String urlKey = CachedWebClient.generateKey(url);
         WebData tempWebData = WebDataStore.getInstance().get(urlKey);
@@ -98,11 +99,9 @@ public class WebRequest {
             }
         }
 
-        // Set Headers (Custom)
-        if (headers != null) {
-            headers.forEach((key, value) -> {
-                httpRequest.putHeader(key, value);
-            });
+        // AWS S3 Signer
+        if (awsS3SignValue != null) {
+            AwsS3SignerV4.putHeaders(httpRequest.headers(), url, awsS3SignValue);
         }
 
         // Log

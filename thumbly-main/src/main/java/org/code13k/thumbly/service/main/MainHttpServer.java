@@ -8,26 +8,20 @@ import org.code13k.thumbly.config.ChannelConfig;
 import org.code13k.thumbly.image.processor.CachedImageProcessor;
 import org.code13k.thumbly.image.processor.model.Command;
 import org.code13k.thumbly.lib.Util;
+import org.code13k.thumbly.model.config.channel.AwsS3Info;
 import org.code13k.thumbly.web.client.CachedWebClient;
 import org.code13k.thumbly.model.config.channel.ChannelInfo;
-import io.netty.handler.codec.http.HttpHeaderNames;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import org.apache.commons.lang3.StringUtils;
+import org.code13k.thumbly.web.client.aws.AwsS3SignValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.net.FileNameMap;
-import java.net.URLConnection;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
 import java.util.function.Consumer;
 
 
@@ -213,7 +207,6 @@ public class MainHttpServer extends AbstractVerticle {
             }
         }
 
-
         /**
          * Check command
          */
@@ -238,7 +231,6 @@ public class MainHttpServer extends AbstractVerticle {
          */
         String originUrl = channelInfo.getBaseUrl() + "/" + pathString;
         mLogger.debug("originUrl = " + originUrl);
-
 
         /**
          * Get status
@@ -281,9 +273,21 @@ public class MainHttpServer extends AbstractVerticle {
          */
         else {
             /**
+             * AWS S3
+             */
+            AwsS3SignValue awsS3SignValue = null;
+            if (channelInfo.getType() == ChannelConfig.ChannelType.AWS_S3) {
+                AwsS3Info awsS3Info = (AwsS3Info) channelInfo;
+                awsS3SignValue = new AwsS3SignValue();
+                awsS3SignValue.setAccessKey(awsS3Info.getAccessKey());
+                awsS3SignValue.setSecretKey(awsS3Info.getSecretKey());
+                awsS3SignValue.setRegion(awsS3Info.getRegion());
+            }
+
+            /**
              * Get origin file
              */
-            CachedWebClient.getInstance().getFile(originUrl, null, new Consumer<String>() {
+            CachedWebClient.getInstance().getFile(originUrl, awsS3SignValue, new Consumer<String>() {
                 @Override
                 public void accept(String originFilePath) {
                     mLogger.debug("originFilePath = " + originFilePath);
