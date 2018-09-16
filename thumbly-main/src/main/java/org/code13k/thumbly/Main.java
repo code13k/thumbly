@@ -112,7 +112,7 @@ public class Main {
             CacheInfo cacheInfo = AppConfig.getInstance().getCache();
             String cacheDirectory = cacheInfo.getRootDirectory() + "/thumb";
             long totalSizeOfThumbnailImages = AppConfig.getInstance().getCache().getTotalSizeOfThumbnailImages();
-            int operatorCount = Math.max(1, Env.getInstance().getProcessorCount() / 2);
+            int operatorCount = Math.max(1, Env.getInstance().getProcessorCount() - 1);
             CachedImageProcessor.getInstance().init(cacheDirectory, totalSizeOfThumbnailImages, operatorCount);
             Thread.sleep(500);
         } catch (Exception e) {
