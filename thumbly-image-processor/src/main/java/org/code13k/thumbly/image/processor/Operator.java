@@ -148,7 +148,7 @@ public class Operator {
                 }
             };
             Thread thread = new Thread(runnable);
-            thread.setPriority(Thread.MIN_PRIORITY);
+            thread.setPriority(Thread.MAX_PRIORITY);
             thread.setName("thumbly-image-processor-operator-" + index);
             thread.start();
         }
