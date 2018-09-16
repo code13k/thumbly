@@ -31,11 +31,14 @@ public class WebRequest {
     /**
      * Constructor
      */
-    public WebRequest(int eventLoopPoolSize) {
+    public WebRequest(int eventLoopPoolSize, String userAgent) {
         mLogger.trace("WebRequest()");
 
         // Set User Agent
-        String userAgent = "Code13k-Thumbly/1.0.0";
+        if (StringUtils.isEmpty(userAgent) == true) {
+            userAgent = "Code13k-Thumbly";
+        }
+        mLogger.trace("userAgent = " + userAgent);
 
         // Set Web Client
         WebClientOptions webClientOptions = new WebClientOptions();

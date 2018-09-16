@@ -47,10 +47,10 @@ public class CachedWebClient {
     /**
      * Initialize
      */
-    synchronized public void init(String cacheDirectory, long maxSizeOfCacheDirectory, int eventLoopPoolSize) {
+    synchronized public void init(String cacheDirectory, long maxSizeOfCacheDirectory, int eventLoopPoolSize, String userAgent) {
         if (mRequestMap == null) {
             mRequestMap = new HashMap<>();
-            mWebRequest = new WebRequest(eventLoopPoolSize);
+            mWebRequest = new WebRequest(eventLoopPoolSize, userAgent);
             FileStore.getInstance().init(cacheDirectory);
             WebDataStore.getInstance().init(cacheDirectory);
             StoreManager.getInstance().init(maxSizeOfCacheDirectory);

@@ -85,10 +85,11 @@ public class Main {
         // Initialize (CachedWebClient)
         try {
             CacheInfo cacheInfo = AppConfig.getInstance().getCache();
-            String cacheDirectory = cacheInfo.getRootDirectory() +"/origin";
+            String cacheDirectory = cacheInfo.getRootDirectory() + "/origin";
             long totalSizeOfOriginImages = AppConfig.getInstance().getCache().getTotalSizeOfOriginImages();
             int eventLoopCount = Math.max(1, Env.getInstance().getProcessorCount() / 2);
-            CachedWebClient.getInstance().init(cacheDirectory, totalSizeOfOriginImages, eventLoopCount);
+            String userAgent = "Code13k-Thumbly/" + Env.getInstance().getVersionString();
+            CachedWebClient.getInstance().init(cacheDirectory, totalSizeOfOriginImages, eventLoopCount, userAgent);
             Thread.sleep(500);
         } catch (Exception e) {
             mLogger.error("Failed to initialize CachedWebClient", e);
@@ -109,7 +110,7 @@ public class Main {
         // Initialize (CachedImageProcessor)
         try {
             CacheInfo cacheInfo = AppConfig.getInstance().getCache();
-            String cacheDirectory = cacheInfo.getRootDirectory() +"/thumb";
+            String cacheDirectory = cacheInfo.getRootDirectory() + "/thumb";
             long totalSizeOfThumbnailImages = AppConfig.getInstance().getCache().getTotalSizeOfThumbnailImages();
             int operatorCount = Math.max(1, Env.getInstance().getProcessorCount() / 2);
             CachedImageProcessor.getInstance().init(cacheDirectory, totalSizeOfThumbnailImages, operatorCount);
