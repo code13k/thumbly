@@ -252,13 +252,13 @@ public class MainHttpServer extends AbstractVerticle {
 
             // Check origin file
             if (StringUtils.isEmpty(cachedOriginFilePath) == true) {
-                MainHttpServerHelper.sendStatus(routingContext, "NOT");
+                MainHttpServerHelper.sendStatus(routingContext, false);
                 return;
             }
 
             // Get origin file
             if (command.getType() == Command.Type.ORIGIN) {
-                MainHttpServerHelper.sendStatus(routingContext, "CACHED");
+                MainHttpServerHelper.sendStatus(routingContext, true);
                 return;
             }
 
@@ -268,10 +268,10 @@ public class MainHttpServer extends AbstractVerticle {
             String cachedThumbFilePath = CachedImageProcessor.getInstance().getCachedFile(cachedOriginFilePath, command);
             mLogger.debug("cachedThumbFilePath = " + cachedThumbFilePath);
             if (StringUtils.isEmpty(cachedThumbFilePath) == true) {
-                MainHttpServerHelper.sendStatus(routingContext, "NOT");
+                MainHttpServerHelper.sendStatus(routingContext, false);
                 return;
             } else {
-                MainHttpServerHelper.sendStatus(routingContext, "CACHED");
+                MainHttpServerHelper.sendStatus(routingContext, true);
                 return;
             }
         }

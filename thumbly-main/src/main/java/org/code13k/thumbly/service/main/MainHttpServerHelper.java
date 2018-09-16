@@ -35,9 +35,9 @@ public class MainHttpServerHelper {
     /**
      * Send status
      */
-    public static void sendStatus(RoutingContext routingContext, String statusMessage) {
+    public static void sendStatus(RoutingContext routingContext, boolean cached) {
         Map<String, Object> jsonResult = new HashMap<>();
-        jsonResult.put("status", statusMessage);
+        jsonResult.put("cached", cached);
         String result = new GsonBuilder().create().toJson(jsonResult);
 
         HttpServerResponse response = routingContext.response();
