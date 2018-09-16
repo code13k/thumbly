@@ -1,6 +1,5 @@
 package org.code13k.thumbly.image.processor.model;
 
-import com.sun.glass.ui.Size;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;

@@ -1,7 +1,5 @@
 package org.code13k.thumbly.image.info.model;
 
-import com.sun.glass.ui.Size;
-
 public class ImageInfo extends BasicModel {
     private int orientation = 1;
     private int sizeWidth = 0;

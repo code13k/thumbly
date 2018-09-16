@@ -1,12 +1,12 @@
 package org.code13k.thumbly.image.processor;
 
-import com.sun.glass.ui.Size;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.code13k.thumbly.image.info.CachedImageInfo;
 import org.code13k.thumbly.image.info.model.ImageInfo;
 import org.code13k.thumbly.image.processor.model.Command;
+import org.code13k.thumbly.image.processor.model.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

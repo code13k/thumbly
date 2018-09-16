@@ -1,6 +1,5 @@
 package org.code13k.thumbly.image.info;
 
-import com.sun.glass.ui.Size;
 import org.apache.commons.lang3.StringUtils;
 import org.code13k.thumbly.image.info.model.ImageInfo;
 import org.code13k.thumbly.image.info.model.Operation;
@@ -69,8 +68,7 @@ public class Operator {
             if (info.getImageWidth() == 0 || info.getImageHeight() == 0) {
                 return null;
             }
-            Size size = new Size(info.getImageWidth(), info.getImageHeight());
-            result.setSize(size.width, size.height);
+            result.setSize(info.getImageWidth(), info.getImageHeight());
         } catch (Exception e) {
             mLogger.error("Failed to get image size : " + filePath + ", " + result, e);
             return null;

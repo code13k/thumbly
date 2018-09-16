@@ -1,9 +1,10 @@
 package org.code13k.thumbly.image.processor;
 
-import com.sun.glass.ui.Size;
+
 import org.apache.commons.io.FilenameUtils;
 import org.code13k.thumbly.image.processor.model.Command;
 import org.code13k.thumbly.image.processor.model.Operation;
+import org.code13k.thumbly.image.processor.model.Size;
 import org.im4java.core.ConvertCmd;
 import org.im4java.core.IMOperation;
 import org.slf4j.Logger;
