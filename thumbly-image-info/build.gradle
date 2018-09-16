@@ -1,0 +1,10 @@
+dependencies {
+
+}
+
+/**
+ * jar
+ */
+jar {
+    baseName = 'code13k-thumbly-image-info'
+}

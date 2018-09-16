@@ -1,0 +1,14 @@
+# Server port
+port:
+  main_http: 57910
+  api_http: 57911
+
+# Cache configuration
+cache:
+  root_directory: ".cache"
+  total_size_of_origin_images: "1G"
+  total_size_of_thumbnail_images: "1G"
+
+
+
+

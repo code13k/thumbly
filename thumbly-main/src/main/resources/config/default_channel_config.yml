@@ -1,0 +1,26 @@
+# Example-1
+thumbly_example1:
+  browser_cache_expiration: "3600s"
+  normal_url_enabled: true
+  secret_url_enabled: true
+  type: "http"
+  base_url: "https://data.forsnap.com"
+
+# Example-2
+thumbly_example2:
+  browser_cache_expiration: "3600s"
+  normal_url_enabled: true
+  secret_url_enabled: false
+  type: "http"
+  base_url: "https://data.forsnap.com"
+
+# Example-3
+thumbly_example3:
+  browser_cache_expiration: "3600s"
+  normal_url_enabled: false
+  secret_url_enabled: true
+  type: "aws_s3"
+  access_key: ""
+  secret_key: ""
+  region: ""
+  bucket: ""

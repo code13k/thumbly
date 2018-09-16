@@ -1,0 +1,10 @@
+dependencies {
+    compile project(':thumbly-image-info')
+}
+
+/**
+ * jar
+ */
+jar {
+    baseName = 'code13k-thumbly-image-processor'
+}

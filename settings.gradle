@@ -1,0 +1,6 @@
+rootProject.name = 'thumbly'
+include 'thumbly-main'
+include 'thumbly-http-client'
+include 'thumbly-image-processor'
+include 'thumbly-image-info'
+

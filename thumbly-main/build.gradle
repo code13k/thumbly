@@ -1,0 +1,52 @@
+plugins {
+    id 'application'
+}
+
+/**
+ * Project
+ */
+dependencies {
+    compile project(':thumbly-http-client')
+    compile project(':thumbly-image-info')
+    compile project(':thumbly-image-processor')
+}
+
+/**
+ * jar
+ */
+jar {
+    baseName = 'code13k-thumbly'
+    manifest {
+        attributes(
+                'Implementation-Title': 'Code13k Thumbly',
+                'Implementation-Version': version,
+                'Main-Class': 'org.code13k.thumbly.Main'
+        )
+    }
+    from {
+        configurations.runtime.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+}
+
+/**
+ * Main Class
+ */
+mainClassName = 'org.code13k.thumbly.Main'
+
+/**
+ * Custom
+ */
+task runJar(dependsOn: jar) {
+    doLast {
+        javaexec {
+            main = "-jar"
+            args = [jar.archivePath]
+        }
+    }
+}
