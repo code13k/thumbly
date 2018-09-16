@@ -4,6 +4,8 @@
 - It provide secret url that is automatically deleted after specific time.
 - It use Imagemagick for image processing
 
+[![Build Status](https://travis-ci.org/code13k/thumbly.svg?branch=master)](https://travis-ci.org/code13k/thumbly)
+
 
 # Supported image format
 * JPG
