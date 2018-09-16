@@ -36,7 +36,7 @@ public class ApiHttpServer extends AbstractVerticle {
 
 
     /**
-     * start()
+     * Start
      */
     @Override
     public void start() throws Exception {

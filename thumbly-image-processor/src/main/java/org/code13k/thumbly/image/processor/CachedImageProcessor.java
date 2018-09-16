@@ -154,9 +154,35 @@ public class CachedImageProcessor {
     }
 
     /**
+     * Get cached file
+     */
+    public String getCachedFile(String originFilePath, Command command) {
+        // Get cached image info
+        ImageInfo cachedImageInfo = CachedImageInfo.getInstance().getCached(originFilePath);
+        if (cachedImageInfo != null) {
+            // Calculate output size
+            Size outputSize = calculateOutputSize(cachedImageInfo, command);
+            if (outputSize != null) {
+                // Process
+                Command newCommand = new Command();
+                newCommand.fromCommand(command);
+                newCommand.setSize(outputSize);
+                // Get thumbnail
+                final String key = generateKey(originFilePath, newCommand);
+                String thumbFilePath = FileStore.getInstance().getCacheFile(key);
+                // End
+                if (StringUtils.isEmpty(thumbFilePath) == false) {
+                    return thumbFilePath;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Operation count in queue
      */
-    public int operationCountInQueue(){
+    public int operationCountInQueue() {
         return mOperator.count();
     }
 

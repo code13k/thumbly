@@ -112,6 +112,20 @@ public class CachedImageInfo {
     }
 
     /**
+     * Get cached image info
+     */
+    public ImageInfo getCached(String filePath){
+        final String key = Util.MD5FromFile(filePath);
+        ImageInfo imageInfo = ImageInfoStore.getInstance().get(key);
+        mLogger.trace("key = " + key);
+
+        if (imageInfo != null) {
+            return imageInfo;
+        }
+        return null;
+    }
+
+    /**
      * Size of cached info
      */
     public int size(){

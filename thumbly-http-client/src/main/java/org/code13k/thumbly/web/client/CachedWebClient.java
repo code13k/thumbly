@@ -2,12 +2,15 @@ package org.code13k.thumbly.web.client;
 
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.code13k.thumbly.web.client.model.WebData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,6 +104,21 @@ public class CachedWebClient {
                 }
             }
         });
+    }
+
+    /**
+     * Get cached file
+     */
+    public String getCachedFile(String url){
+        WebData cachedWebData = getCache(url);
+        if(cachedWebData!=null){
+            String cachedFilePath = cachedWebData.getFilePath();
+            boolean result = Files.exists(Paths.get(cachedFilePath));
+            if (result == true) {
+                return cachedFilePath;
+            }
+        }
+        return null;
     }
 
     /**

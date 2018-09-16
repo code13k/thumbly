@@ -114,7 +114,10 @@ The other is a restful API server that provide application information and addit
 ## Main HTTP Server
 ### Usage
 ```html
+http://example.com:{port}/{secret_path}
 http://example.com:{port}/{command}/{channel}/{path}
+http://example.com:{port}/status/{secret_path}
+http://example.com:{port}/status/{command}/{channel}/{path}
 ```
 * port
   * Server port
@@ -134,6 +137,8 @@ http://example.com:{port}/{command}/{channel}/{path}
   * It's *channel* in channel_config.yml
 * path
   * Origin path
+* status
+  * Check if thumbnail is generated and cached in disk.
 
 ### Example
 ```html
