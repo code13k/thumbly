@@ -197,12 +197,12 @@ public class MainHttpServer extends AbstractVerticle {
         mLogger.trace("channelInfo = " + channelInfo);
         if (isSecretUrl == true) {
             if (channelInfo.isSecretUrlEnabled() == false) {
-                MainHttpServerHelper.sendResponse(routingContext, 400, "Bad Request. (Invalid URL)");
+                MainHttpServerHelper.sendResponse(routingContext, 403, "Forbidden. (Not supported secret url)");
                 return;
             }
         } else {
             if (channelInfo.isNormalUrlEnabled() == false) {
-                MainHttpServerHelper.sendResponse(routingContext, 400, "Bad Request. (Invalid URL)");
+                MainHttpServerHelper.sendResponse(routingContext, 403, "Forbidden. (Not supported normal url)");
                 return;
             }
         }

@@ -143,11 +143,11 @@ public class ApiHttpServer extends AbstractVerticle {
      */
     private void setImageRouter(Router router) {
         // GET /image/secret/:path
-        router.route().path("/image/secret/:secretPath").handler(routingContext -> {
+        router.route().path("/image/secret/:secret_path").handler(routingContext -> {
             routingContext.request().endHandler(new Handler<Void>() {
                 @Override
                 public void handle(Void event) {
-                    final String secretPathString = routingContext.request().getParam("secretPath");
+                    final String secretPathString = routingContext.request().getParam("secret_path");
                     mLogger.trace("secretPathString = " + secretPathString);
                     String resultString = mImageAPI.getSecretUrl(secretPathString);
                     if (StringUtils.isEmpty(resultString) == true) {
