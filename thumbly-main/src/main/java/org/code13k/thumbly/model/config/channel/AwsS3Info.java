@@ -8,7 +8,7 @@ public class AwsS3Info extends ChannelInfo {
 
     @Override
     public String getBaseUrl() {
-        return "https://s3." + region + ".amazonaws.com";
+        return "https://s3." + region + ".amazonaws.com/" + bucket;
     }
 
     public String getAccessKey() {
