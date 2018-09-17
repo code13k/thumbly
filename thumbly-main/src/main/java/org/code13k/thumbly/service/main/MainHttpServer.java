@@ -278,11 +278,16 @@ public class MainHttpServer extends AbstractVerticle {
             AwsS3SignValue awsS3SignValue = null;
             if (channelInfo.getType() == ChannelConfig.ChannelType.AWS_S3) {
                 AwsS3Info awsS3Info = (AwsS3Info) channelInfo;
-                awsS3SignValue = new AwsS3SignValue();
-                awsS3SignValue.setAccessKey(awsS3Info.getAccessKey());
-                awsS3SignValue.setSecretKey(awsS3Info.getSecretKey());
-                awsS3SignValue.setRegion(awsS3Info.getRegion());
+                if (StringUtils.isEmpty(awsS3Info.getAccessKey()) == false) {
+                    if (StringUtils.isEmpty(awsS3Info.getSecretKey()) == false) {
+                        awsS3SignValue = new AwsS3SignValue();
+                        awsS3SignValue.setAccessKey(awsS3Info.getAccessKey());
+                        awsS3SignValue.setSecretKey(awsS3Info.getSecretKey());
+                        awsS3SignValue.setRegion(awsS3Info.getRegion());
+                    }
+                }
             }
+            mLogger.trace("awsS3SignValue = " + awsS3SignValue);
 
             /**
              * Get origin file

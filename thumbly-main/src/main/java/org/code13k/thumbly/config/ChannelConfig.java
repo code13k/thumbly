@@ -127,11 +127,7 @@ public class ChannelConfig extends BasicConfig {
                     awsS3Info.setBucket(bucket);
 
                     // Check validation
-                    if (StringUtils.isEmpty(awsS3Info.getAccessKey()) == true) {
-                        mLogger.error("Invalid aws_s3 channel (access_key is invalid)");
-                    } else if (StringUtils.isEmpty(awsS3Info.getSecretKey()) == true) {
-                        mLogger.error("Invalid aws_s3 channel (secret_key is invalid)");
-                    } else if (StringUtils.isEmpty(awsS3Info.getRegion()) == true) {
+                    if (StringUtils.isEmpty(awsS3Info.getRegion()) == true) {
                         mLogger.error("Invalid aws_s3 channel (region is invalid)");
                     } else if (StringUtils.isEmpty(awsS3Info.getBucket()) == true) {
                         mLogger.error("Invalid aws_s3 channel (bucket is invalid)");

@@ -1,6 +1,7 @@
 package org.code13k.thumbly.web.client.aws;
 
 import io.vertx.core.MultiMap;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.lucasweb.aws.v4.signer.HttpRequest;
@@ -24,6 +25,14 @@ public class AwsS3SignerV4 {
      */
     public static boolean putHeaders(MultiMap headers, String url, AwsS3SignValue awsS3SignValue) {
         try {
+            // Check
+            if(StringUtils.isEmpty(awsS3SignValue.getAccessKey())==true){
+                return true;
+            }
+            if(StringUtils.isEmpty(awsS3SignValue.getSecretKey())==true){
+                return false;
+            }
+
             // Init
             URI uri = new URI(url);
             HttpRequest request = new HttpRequest("GET", uri);
