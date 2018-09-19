@@ -1,29 +1,31 @@
 # Virtual machine crash logs
-hs_err_pid*
+/hs_err_pid*
 
 # Gradle build files
-.gradle/
+/.gradle/
 
 # IDEA files
-.idea/
+/.idea/
 
 # Vertx
-.vertx
-
-# Temp
-.temp
-
-# Cache
-.cache
+/.vertx/
 
 # Build
-thumbly-http-client/build/
-thumbly-image-info/build/
-thumbly-image-processor/build/
-thumbly-main/build/
+/thumbly-http-client/build/
+/thumbly-image-info/build/
+/thumbly-image-processor/build/
+/thumbly-main/build/
+
+# Cache
+/thumbly-main/.cache/
+
+# Temp
+/thumbly-main/.temp/
 
 # Log
-thumbly-main/log/
+/thumbly-main/log/
 
 # Config
-thumbly-main/config/
+/thumbly-main/config/
+
+

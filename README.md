@@ -1,8 +1,8 @@
 # Thumbly is a on-demand image server for generating thumbnail dynamically.
-- It dynamically generate thumbnail image on request.
-- Generated thumbnails are cached in disk.
-- It provide secret url that is automatically deleted after specific time.
-- It use Imagemagick for image processing
+* It dynamically generate thumbnail image on request.
+* Generated thumbnails are cached in disk.
+* It provide secret url that is automatically deleted after specific time.
+* It use Imagemagick for image processing
 
 [![Build Status](https://travis-ci.org/code13k/thumbly.svg?branch=master)](https://travis-ci.org/code13k/thumbly)
 
