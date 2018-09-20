@@ -111,7 +111,7 @@ public class StoreManager {
 
                         // Sleep
                         try {
-                            Thread.sleep(1000 * 60 * 1);
+                            Thread.sleep(1000 * 60 * 10);
                         } catch (Exception e) {
                             // Nothing
                         }
