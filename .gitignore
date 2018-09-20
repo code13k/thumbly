@@ -10,22 +10,23 @@
 # Vertx
 /.vertx/
 
+# Cache
+/.cache/
+
+# Temp
+/.temp/
+
+# Log
+/log/
+
+# Config
+/config/
+
 # Build
 /thumbly-http-client/build/
 /thumbly-image-info/build/
 /thumbly-image-processor/build/
 /thumbly-main/build/
-
-# Cache
-/thumbly-main/.cache/
-
-# Temp
-/thumbly-main/.temp/
-
-# Log
-/thumbly-main/log/
-
-# Config
-/thumbly-main/config/
+/build/
 
 
