@@ -53,7 +53,6 @@ public class WebDataStore {
                 mDB = DBMaker
                         .fileDB(baseDirectory + "/" + DATA_STORE_FILE_NAME)
                         .closeOnJvmShutdown()
-                        .fileMmapEnable()
                         .fileMmapEnableIfSupported()
                         .make();
                 mData = (ConcurrentMap<String, WebData>) mDB.hashMap("WebDataStore").createOrOpen();

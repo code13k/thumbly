@@ -53,7 +53,6 @@ public class ImageInfoStore {
                 mDB = DBMaker
                         .fileDB(baseDirectory + "/" + DATA_STORE_FILE_NAME)
                         .closeOnJvmShutdown()
-                        .fileMmapEnable()
                         .fileMmapEnableIfSupported()
                         .make();
                 mData = (ConcurrentMap<String, ImageInfo>) mDB
