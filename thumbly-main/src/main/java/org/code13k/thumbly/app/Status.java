@@ -46,7 +46,7 @@ public class Status {
      */
     public void init() {
         // Timer
-        Timer timer = new Timer("thumbly-status-logging");
+        Timer timer = new Timer("thumbly-status");
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
