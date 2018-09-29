@@ -87,8 +87,10 @@ public class MainHttpServerHelper {
         else {
             // Init
             File file = new File(filePath);
-            int maxAge = browserCacheExpiration;
             long lastModifiedTimeMillis = file.lastModified();
+            long currentTimeMillis = System.currentTimeMillis();
+            int maxAge = browserCacheExpiration;
+
 
             // Check to modify
             boolean isModified = false;
@@ -113,7 +115,7 @@ public class MainHttpServerHelper {
             // Expires
             SimpleDateFormat expiresFormat = new SimpleDateFormat(HTTP_DATE_FORMAT);
             expiresFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-            String expiresString = expiresFormat.format(lastModifiedTimeMillis);
+            String expiresString = expiresFormat.format(currentTimeMillis + (maxAge * 1000L));
             routingContext.response().putHeader(HttpHeaderNames.EXPIRES, expiresString);
 
             // Last-Modified
@@ -134,7 +136,7 @@ public class MainHttpServerHelper {
             // Date
             SimpleDateFormat currentDateFormat = new SimpleDateFormat(HTTP_DATE_FORMAT);
             currentDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-            String currentDateString = currentDateFormat.format(System.currentTimeMillis());
+            String currentDateString = currentDateFormat.format(currentTimeMillis);
             routingContext.response().putHeader(HttpHeaderNames.DATE, currentDateString);
 
             // Not Modified (304)
