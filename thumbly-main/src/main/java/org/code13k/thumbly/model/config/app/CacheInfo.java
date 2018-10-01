@@ -1,6 +1,8 @@
 package org.code13k.thumbly.model.config.app;
 
-public class CacheInfo {
+import org.code13k.thumbly.model.BasicModel;
+
+public class CacheInfo extends BasicModel {
     private String rootDirectory;
     private long totalSizeOfOriginImages;
     private long totalSizeOfThumbnailImages;
