@@ -19,15 +19,15 @@ public class ImageAPI extends BasicAPI {
 
         parameterList.forEach(parameter -> {
             HashMap<String, Object> resultItem = new HashMap<>();
-            String originPath = (String) parameter.get("originPath");
+            String path = (String) parameter.get("path");
             long expires = (long) parameter.get("expires");
-            ClusteredSecretUrl.getInstance().set(originPath, expires, new Consumer<String>() {
+            ClusteredSecretUrl.getInstance().set(path, expires, new Consumer<String>() {
                 @Override
                 public void accept(String secretPath) {
                     if (StringUtils.isEmpty(secretPath) == true) {
                         secretPath = "";
                     }
-                    resultItem.put("originPath", originPath);
+                    resultItem.put("path", path);
                     resultItem.put("secretPath", secretPath);
                     resultList.add(resultItem);
                     if (processingCount.decrementAndGet() == 0) {
@@ -43,12 +43,12 @@ public class ImageAPI extends BasicAPI {
     /**
      * Get origin url
      */
-    public void getOriginUrl(String secretPath, Consumer<String> consumer) {
+    public void getUrlFromSecretUrl(String secretPath, Consumer<String> consumer) {
         ClusteredSecretUrl.getInstance().get(secretPath, new Consumer<String>() {
             @Override
-            public void accept(String originPath) {
+            public void accept(String path) {
                 if (consumer != null) {
-                    consumer.accept(toResultJsonString(originPath));
+                    consumer.accept(toResultJsonString(path));
                 }
             }
         });

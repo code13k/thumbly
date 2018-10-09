@@ -70,10 +70,10 @@ public class ClusteredSecretUrl {
     /**
      * Set
      */
-    public void set(String originPath, long ttl, Consumer<String> consumer) {
-        if (StringUtils.isEmpty(originPath) == false) {
-            String secretPath = generateSecretKey(originPath, ttl);
-            ICompletableFuture<String> future = mData.putAsync(secretPath, originPath, ttl, TimeUnit.SECONDS);
+    public void set(String path, long ttl, Consumer<String> consumer) {
+        if (StringUtils.isEmpty(path) == false) {
+            String secretPath = generateSecretKey(path, ttl);
+            ICompletableFuture<String> future = mData.putAsync(secretPath, path, ttl, TimeUnit.SECONDS);
             future.andThen(new ExecutionCallback<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -129,12 +129,19 @@ public class ClusteredSecretUrl {
     }
 
     /**
+     * Size
+     */
+    public int size(){
+        return mData.size();
+    }
+
+    /**
      * Generate Key
      */
-    private String generateSecretKey(String originPath, long expires) {
+    private String generateSecretKey(String path, long expires) {
         Random random = new Random();
         StringBuffer sb = new StringBuffer();
-        sb.append(originPath);
+        sb.append(path);
         sb.append("" + expires);
         sb.append("" + System.currentTimeMillis());
         sb.append("" + System.nanoTime());

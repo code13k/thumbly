@@ -202,13 +202,13 @@ public class ApiHttpServer extends AbstractVerticle {
      */
     private void setImageRouter(Router router) {
         // GET /image/secret/:secret_path
-        router.route().path("/image/secret/:secret_path").handler(routingContext -> {
+        router.route().method(HttpMethod.GET).path("/image/secret/:secret_path").handler(routingContext -> {
             routingContext.request().endHandler(new Handler<Void>() {
                 @Override
                 public void handle(Void event) {
                     final String secretPathString = routingContext.request().getParam("secret_path");
                     mLogger.trace("secretPathString = " + secretPathString);
-                    mImageAPI.getOriginUrl(secretPathString, new Consumer<String>() {
+                    mImageAPI.getUrlFromSecretUrl(secretPathString, new Consumer<String>() {
                         @Override
                         public void accept(String resultString) {
                             if (StringUtils.isEmpty(resultString) == true) {
@@ -247,18 +247,14 @@ public class ApiHttpServer extends AbstractVerticle {
                             HashMap<String, Object> parameter = new HashMap<>();
                             JsonObject param = jsonArray.getJsonObject(i);
 
-                            // Secret Path
-                            String secretPath = param.getString("secretPath", "");
-                            parameter.put("secretPath", secretPath);
-
                             // Origin Path
-                            String originPath = param.getString("originPath", "");
-                            parameter.put("originPath", originPath);
+                            String originPath = param.getString("path", "");
+                            parameter.put("path", originPath);
 
                             // Expired
-                            int expires = 0;
+                            long expires = 0;
                             try {
-                                expires = param.getInteger("expires", 0);
+                                expires = param.getLong("expires", 0L);
                             } catch (Exception e) {
                                 String temp = param.getString("expires", "0");
                                 expires = Integer.valueOf(temp);
@@ -267,7 +263,7 @@ public class ApiHttpServer extends AbstractVerticle {
 
                             // End
                             parameterList.add(parameter);
-                            if (StringUtils.isEmpty(secretPath) || StringUtils.isEmpty(originPath) || expires == 0) {
+                            if (StringUtils.isEmpty(originPath) || expires == 0) {
                                 responseHttpError(routingContext, 400, "Bad Request");
                                 return;
                             }

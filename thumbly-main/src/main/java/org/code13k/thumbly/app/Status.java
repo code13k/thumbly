@@ -2,6 +2,7 @@ package org.code13k.thumbly.app;
 
 
 import org.apache.commons.io.FileUtils;
+import org.code13k.thumbly.business.ClusteredSecretUrl;
 import org.code13k.thumbly.image.info.CachedImageInfo;
 import org.code13k.thumbly.image.processor.CachedImageProcessor;
 import org.code13k.thumbly.web.client.CachedWebClient;
@@ -88,8 +89,10 @@ public class Status {
         // Cached (Thumbnail)
         sizeOfCacheDirectory = CachedImageProcessor.getInstance().sizeOfCacheDirectory();
         displaySize = FileUtils.byteCountToDisplaySize(sizeOfCacheDirectory);
-
         sb.append(", Cached(Thumbnail) = " + displaySize);
+
+        // SecretUrl
+        sb.append(", SecretUrls=" + ClusteredSecretUrl.getInstance().size());
 
         // End
         mLogger.info(sb.toString());
