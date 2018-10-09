@@ -76,7 +76,7 @@ Get application environments
   }
 }
 ```
-#### GET /app/status
+## GET /app/status
 Get application status
 ```json
 {
