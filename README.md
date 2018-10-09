@@ -15,26 +15,26 @@ You can build high availability(HA) systems by clustering node.
 * **[API](./doc/api_server.md)**
 
 
-# Latest Release
+## Latest Release
 The current stable version is ready.
 
 The current unstable version is [v1.0.0-Alpha.2](https://github.com/code13k/thumbly/releases/tag/1.0.0-Alpha.2)
 
 
-# Supported Image Format
+## Supported Image Format
 * JPG
 * GIF
 * PNG
 * WEBP
 
 
-# Dependency
+## Dependency
 * Imagemagick
   * https://www.imagemagick.org
   * Thumbly use Imagemagick for image processing
  
 
-# License
+## License
 MIT License
 
 Copyright (c) 2018 Code13K
