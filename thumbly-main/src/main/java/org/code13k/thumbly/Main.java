@@ -2,9 +2,11 @@ package org.code13k.thumbly;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
+import org.code13k.thumbly.app.Cluster;
 import org.code13k.thumbly.app.Env;
 import org.code13k.thumbly.app.Status;
-import org.code13k.thumbly.business.SecretUrlManager;
+import org.code13k.thumbly.business.ClusteredProcedure;
+import org.code13k.thumbly.business.ClusteredSecretUrl;
 import org.code13k.thumbly.config.AppConfig;
 import org.code13k.thumbly.config.ChannelConfig;
 import org.code13k.thumbly.config.LogConfig;
@@ -76,7 +78,9 @@ public class Main {
             ChannelConfig.getInstance().init();
             Env.getInstance().init();
             Status.getInstance().init();
-            SecretUrlManager.getInstance().init();
+            Cluster.getInstance().init();
+            ClusteredSecretUrl.getInstance().init();
+            ClusteredProcedure.getInstance().init();
         } catch (Exception e) {
             mLogger.error("Failed to initialize", e);
             System.exit(1);

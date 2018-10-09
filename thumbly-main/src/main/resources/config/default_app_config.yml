@@ -1,7 +1,7 @@
 # Server port
 port:
-  main_http: 57910
-  api_http: 57911
+  main_http: 57900
+  api_http: 57901
 
 # Cache configuration
 cache:
@@ -9,6 +9,12 @@ cache:
   total_size_of_origin_images: "1G"
   total_size_of_thumbnail_images: "1G"
 
+# Cluster
+#cluster:
+#  port: 57910
+#  nodes:
+#    - 192.168.100.1
+#    - 192.168.100.2
 
 
 

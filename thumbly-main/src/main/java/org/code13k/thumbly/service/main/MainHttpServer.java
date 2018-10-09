@@ -2,7 +2,7 @@ package org.code13k.thumbly.service.main;
 
 
 import io.vertx.core.http.HttpMethod;
-import org.code13k.thumbly.business.SecretUrlManager;
+import org.code13k.thumbly.business.ClusteredSecretUrl;
 import org.code13k.thumbly.config.AppConfig;
 import org.code13k.thumbly.config.ChannelConfig;
 import org.code13k.thumbly.image.processor.CachedImageProcessor;
@@ -61,8 +61,40 @@ public class MainHttpServer extends AbstractVerticle {
 
         // Listen
         httpServer.requestHandler(router::accept).listen();
+
+        // End
+        logging(httpServerOptions, router);
     }
 
+    /**
+     * Logging
+     */
+    private void logging(HttpServerOptions httpServerOptions, Router router) {
+        synchronized (mLogger) {
+            // Begin
+            mLogger.info("------------------------------------------------------------------------");
+            mLogger.info("Main HTTP Server");
+            mLogger.info("------------------------------------------------------------------------");
+
+            // Vert.x
+            mLogger.info("Vert.x clustered = " + getVertx().isClustered());
+            mLogger.info("Vert.x deployment ID = " + deploymentID());
+
+            // Http Server Options
+            mLogger.info("Port = " + httpServerOptions.getPort());
+            mLogger.info("Idle timeout (second) = " + httpServerOptions.getIdleTimeout());
+            mLogger.info("Compression supported = " + httpServerOptions.isCompressionSupported());
+            mLogger.info("Compression level = " + httpServerOptions.getCompressionLevel());
+
+            // Route
+            router.getRoutes().forEach(r -> {
+                mLogger.info("Routing path = " + r.getPath());
+            });
+
+            // End
+            mLogger.info("------------------------------------------------------------------------");
+        }
+    }
 
     /**
      * Set router
@@ -114,29 +146,33 @@ public class MainHttpServer extends AbstractVerticle {
         /**
          * Check secret path
          */
-        final String path = SecretUrlManager.getInstance().get(secretPathString);
-        mLogger.trace("path=" + path);
-        if (StringUtils.isEmpty(path) == true) {
-            MainHttpServerHelper.sendResponse(routingContext, 404, "Not Found");
-            return;
-        }
+        ClusteredSecretUrl.getInstance().get(secretPathString, new Consumer<String>() {
+            @Override
+            public void accept(String path) {
+                mLogger.trace("path=" + path);
+                if (StringUtils.isEmpty(path) == true) {
+                    MainHttpServerHelper.sendResponse(routingContext, 404, "Not Found");
+                    return;
+                }
 
-        /**
-         * Parse
-         */
-        final ArrayList<String> parsedPath = MainHttpServerHelper.parseSecretPath(path);
-        if (parsedPath == null) {
-            MainHttpServerHelper.sendResponse(routingContext, 400, "Bad Request. (Invalid URL)");
-            return;
-        }
-        final String commandString = parsedPath.get(0);
-        final String channelString = parsedPath.get(1);
-        final String pathString = parsedPath.get(2);
+                /**
+                 * Parse
+                 */
+                final ArrayList<String> parsedPath = MainHttpServerHelper.parseSecretPath(path);
+                if (parsedPath == null) {
+                    MainHttpServerHelper.sendResponse(routingContext, 400, "Bad Request. (Invalid URL)");
+                    return;
+                }
+                final String commandString = parsedPath.get(0);
+                final String channelString = parsedPath.get(1);
+                final String pathString = parsedPath.get(2);
 
-        /**
-         * Handler
-         */
-        handler(routingContext, commandString, channelString, pathString, true, isStatus);
+                /**
+                 * Handler
+                 */
+                handler(routingContext, commandString, channelString, pathString, true, isStatus);
+            }
+        });
     }
 
     /**

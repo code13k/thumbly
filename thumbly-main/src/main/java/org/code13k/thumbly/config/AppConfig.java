@@ -4,11 +4,13 @@ package org.code13k.thumbly.config;
 import org.apache.commons.lang3.StringUtils;
 import org.code13k.thumbly.lib.Util;
 import org.code13k.thumbly.model.config.app.CacheInfo;
+import org.code13k.thumbly.model.config.app.ClusterInfo;
 import org.code13k.thumbly.model.config.app.PortInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class AppConfig extends BasicConfig {
@@ -18,6 +20,7 @@ public class AppConfig extends BasicConfig {
     // Data
     private PortInfo mPortInfo = new PortInfo();
     private CacheInfo mCacheInfo = new CacheInfo();
+    private ClusterInfo mClusterInfo = new ClusterInfo();
 
     /**
      * Singleton
@@ -99,6 +102,21 @@ public class AppConfig extends BasicConfig {
             mCacheInfo.setRootDirectory(cacheRootDirectory);
             mCacheInfo.setTotalSizeOfOriginImages(totalSizeOfOriginImages);
             mCacheInfo.setTotalSizeOfThumbnailImages(totalSizeOfThumbnailImages);
+
+            // ClusterInfo
+            LinkedHashMap clusterObject = (LinkedHashMap) yamlObject.get("cluster");
+            if (clusterObject != null) {
+                mLogger.trace("portObject class name = " + portObject.getClass().getName());
+                mLogger.trace("portObject = " + portObject);
+                Integer clusterPort = (Integer) clusterObject.get("port");
+                if (Util.isValidPortNumber(clusterPort) == false) {
+                    mLogger.error("Invalid port of cluster : " + clusterPort);
+                    return false;
+                }
+                ArrayList<String> clusterNodes = (ArrayList<String>) clusterObject.get("nodes");
+                mClusterInfo.setPort(clusterPort);
+                mClusterInfo.setNodes(clusterNodes);
+            }
         } catch (Exception e) {
             mLogger.error("Failed to load config file", e);
             return false;
@@ -120,10 +138,14 @@ public class AppConfig extends BasicConfig {
         mLogger.info("main_http of PortInfo = " + mPortInfo.getMainHttp());
         mLogger.info("api_http of PortInfo = " + mPortInfo.getApiHttp());
 
-        // ClusterInfo
+        // CacheInfo
         mLogger.info("root_directory of CacheInfo = " + mCacheInfo.getRootDirectory());
         mLogger.info("total_size_of_origin_images of CacheInfo = " + mCacheInfo.getTotalSizeOfOriginImages());
         mLogger.info("total_size_of_thumbnail_images of CacheInfo = " + mCacheInfo.getTotalSizeOfThumbnailImages());
+
+        // ClusterInfo
+        mLogger.info("port of ClusterInfo = " + mClusterInfo.getPort());
+        mLogger.info("nodes of ClusterInfo = " + mClusterInfo.getNodes());
 
         // End
         mLogger.info("------------------------------------------------------------------------");
@@ -141,5 +163,12 @@ public class AppConfig extends BasicConfig {
      */
     public CacheInfo getCache() {
         return mCacheInfo;
+    }
+
+    /**
+     * Get cluster
+     */
+    public ClusterInfo getCluster() {
+        return mClusterInfo;
     }
 }

@@ -196,7 +196,7 @@ http://example.com:57911/app/ping
 ```json
 {
   "data": {
-    "expired": 87,
+    "expires": 87,
     "originPath": "thumb-270x0-webp/thumbly_example1/product/ae/934/portfolio5a66f20fbe831.jpg"
   }
 }
@@ -211,7 +211,7 @@ http://example.com:57911/app/ping
     {
       "secretPath":"test3", 
       "originPath":"thumb-270x0-webp/thumbly_example1/product/ae/934/portfolio5a66f20fbe831.jpg", 
-	  "expired":100,
+	  "expires":100
     }
   ]
 }
@@ -222,7 +222,7 @@ http://example.com:57911/app/ping
   "data": [
     {
       "result": true,
-      "expired": 100,
+      "expires": 100,
       "originPath": "thumb-270x0-webp/thumbly_example1/product/ae/934/portfolio5a66f20fbe831.jpg",
       "secretPath": "test3"
     }

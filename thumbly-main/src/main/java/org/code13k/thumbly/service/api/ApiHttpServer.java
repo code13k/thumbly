@@ -5,6 +5,7 @@ import org.code13k.thumbly.config.ChannelConfig;
 import org.code13k.thumbly.model.config.channel.ChannelInfo;
 import org.code13k.thumbly.service.api.controller.AppAPI;
 import org.code13k.thumbly.service.api.controller.CacheAPI;
+import org.code13k.thumbly.service.api.controller.ClusterAPI;
 import org.code13k.thumbly.service.api.controller.ImageAPI;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 
 public class ApiHttpServer extends AbstractVerticle {
@@ -30,9 +32,11 @@ public class ApiHttpServer extends AbstractVerticle {
     public static final int PORT = AppConfig.getInstance().getPort().getApiHttp();
 
     // API Controllers
+    private final AppAPI mAppAPI = new AppAPI();
+    private final ClusterAPI mClusterAPI = new ClusterAPI();
     private final ImageAPI mImageAPI = new ImageAPI();
     private final CacheAPI mCacheAPI = new CacheAPI();
-    private final AppAPI mAppAPI = new AppAPI();
+
 
 
     /**
@@ -52,9 +56,11 @@ public class ApiHttpServer extends AbstractVerticle {
 
         // Routing
         Router router = Router.router(vertx);
+        setAppRouter(router);
+        setClusterRouter(router);
         setImageRouter(router);
         setCacheRouter(router);
-        setAppRouter(router);
+
 
         // Listen
         httpServer.requestHandler(router::accept).listen();
@@ -92,136 +98,6 @@ public class ApiHttpServer extends AbstractVerticle {
             mLogger.info("------------------------------------------------------------------------");
         }
     }
-
-    /**
-     * Set cache router
-     */
-    private void setCacheRouter(Router router) {
-        // GET /cache/origin/:channel/:path
-        // DELETE /cache/origin/:channel/:path
-        router.route().path("/cache/origin/:channel/*").handler(routingContext -> {
-            routingContext.request().endHandler(new Handler<Void>() {
-                @Override
-                public void handle(Void event) {
-                    final HttpMethod method = routingContext.request().method();
-                    final String prefixString = "/cache/origin/";
-                    final String channelString = routingContext.request().getParam("channel");
-                    final String requestUrl = routingContext.request().uri();
-                    final String pathString = parsePath(requestUrl, prefixString, channelString);
-
-                    if (StringUtils.isEmpty(pathString) == true) {
-                        responseHttpError(routingContext, 400, "Bad Request (Invalid Path)");
-                        return;
-                    }
-                    ChannelInfo channelInfo = ChannelConfig.getInstance().getChannelInfo(channelString);
-                    if (channelInfo == null) {
-                        responseHttpError(routingContext, 400, "Bad Request. (Invalid Channel)");
-                        return;
-                    }
-                    String originUrl = channelInfo.getBaseUrl() + "/" + pathString;
-                    mLogger.debug("originUrl = " + originUrl);
-
-                    if (HttpMethod.GET == method) {
-                        String resultString = mCacheAPI.getOrigin(originUrl);
-                        if (StringUtils.isEmpty(resultString) == true) {
-                            responseHttpError(routingContext, 400, "Bad Request (Origin Not Found)");
-                        } else {
-                            responseHttpOK(routingContext, resultString);
-                        }
-                    } else if (HttpMethod.DELETE == method) {
-                        responseHttpOK(routingContext, mCacheAPI.deleteOrigin(originUrl));
-                    } else {
-                        responseHttpError(routingContext, 400, "Bad Request. (Invalid HTTP Method)");
-                    }
-                }
-            });
-        });
-    }
-
-    /**
-     * Set image router
-     */
-    private void setImageRouter(Router router) {
-        // GET /image/secret/:path
-        router.route().path("/image/secret/:secret_path").handler(routingContext -> {
-            routingContext.request().endHandler(new Handler<Void>() {
-                @Override
-                public void handle(Void event) {
-                    final String secretPathString = routingContext.request().getParam("secret_path");
-                    mLogger.trace("secretPathString = " + secretPathString);
-                    String resultString = mImageAPI.getSecretUrl(secretPathString);
-                    if (StringUtils.isEmpty(resultString) == true) {
-                        responseHttpError(routingContext, 400, "Bad Request (Invalid Secret Path)");
-                    } else {
-                        responseHttpOK(routingContext, resultString);
-                    }
-                }
-            });
-        });
-
-        // POST /image/secret
-        //
-        // {
-        //   "data" : [
-        //     {"secretPath":"secretPath1", "originPath":"originPath1", "expired":1},
-        //     {"secretPath":"secretPath2", "originPath":"originPath2", "expired":2}
-        //   ]
-        // }
-        router.route().method(HttpMethod.POST).path("/image/secret").handler(routingContext -> {
-            routingContext.request().setExpectMultipart(true);
-            routingContext.request().bodyHandler(new Handler<Buffer>() {
-                @Override
-                public void handle(Buffer event) {
-                    // Get Body Data
-                    String body = event.toString();
-
-                    // Parse Parameters
-                    ArrayList<HashMap<String, Object>> parameterList = new ArrayList<>();
-                    try {
-                        JsonObject jsonObject = new JsonObject(body);
-                        JsonArray jsonArray = jsonObject.getJsonArray("data");
-                        for (int i = 0; i < jsonArray.size(); i++) {
-                            HashMap<String, Object> parameter = new HashMap<>();
-                            JsonObject param = jsonArray.getJsonObject(i);
-
-                            // Secret Path
-                            String secretPath = param.getString("secretPath", "");
-                            parameter.put("secretPath", secretPath);
-
-                            // Origin Path
-                            String originPath = param.getString("originPath", "");
-                            parameter.put("originPath", originPath);
-
-                            // Expired
-                            int expired = 0;
-                            try {
-                                expired = param.getInteger("expired", 0);
-                            } catch (Exception e) {
-                                String temp = param.getString("expired", "0");
-                                expired = Integer.valueOf(temp);
-                            }
-                            parameter.put("expired", expired);
-
-                            // End
-                            parameterList.add(parameter);
-                            if (StringUtils.isEmpty(secretPath) || StringUtils.isEmpty(originPath) || expired == 0) {
-                                responseHttpError(routingContext, 400, "Bad Request");
-                                return;
-                            }
-                        }
-                    } catch (Exception e) {
-                        mLogger.error("error : " + e);
-                    }
-
-                    // End
-                    String result = mImageAPI.createSecretUrl(parameterList);
-                    mLogger.trace("result : " + result);
-                    responseHttpOK(routingContext, result);
-                }
-            });
-        });
-    }
-
 
     /**
      * Set app router
@@ -273,6 +149,146 @@ public class ApiHttpServer extends AbstractVerticle {
             });
         });
     }
+
+    /**
+     * Set cluster router
+     */
+    private void setClusterRouter(Router router) {
+        // GET /cluster/status
+        router.route().method(HttpMethod.GET).path("/cluster/status").handler(routingContext -> {
+            routingContext.request().endHandler(new Handler<Void>() {
+                @Override
+                public void handle(Void event) {
+                    responseHttpOK(routingContext, mClusterAPI.status());
+                }
+            });
+        });
+    }
+
+    /**
+     * Set cache router
+     */
+    private void setCacheRouter(Router router) {
+        // DELETE /cache/origin/:channel/:path
+        router.route().method(HttpMethod.DELETE).path("/cache/origin/:channel/*").handler(routingContext -> {
+            routingContext.request().endHandler(new Handler<Void>() {
+                @Override
+                public void handle(Void event) {
+                    final HttpMethod method = routingContext.request().method();
+                    final String prefixString = "/cache/origin/";
+                    final String channelString = routingContext.request().getParam("channel");
+                    final String requestUrl = routingContext.request().uri();
+                    final String pathString = parsePath(requestUrl, prefixString, channelString);
+
+                    if (StringUtils.isEmpty(pathString) == true) {
+                        responseHttpError(routingContext, 400, "Bad Request (Invalid Path)");
+                        return;
+                    }
+                    ChannelInfo channelInfo = ChannelConfig.getInstance().getChannelInfo(channelString);
+                    if (channelInfo == null) {
+                        responseHttpError(routingContext, 400, "Bad Request. (Invalid Channel)");
+                        return;
+                    }
+                    String originUrl = channelInfo.getBaseUrl() + "/" + pathString;
+                    mLogger.debug("originUrl = " + originUrl);
+                    responseHttpOK(routingContext, mCacheAPI.deleteOrigin(originUrl));
+                }
+            });
+        });
+    }
+
+    /**
+     * Set image router
+     */
+    private void setImageRouter(Router router) {
+        // GET /image/secret/:secret_path
+        router.route().path("/image/secret/:secret_path").handler(routingContext -> {
+            routingContext.request().endHandler(new Handler<Void>() {
+                @Override
+                public void handle(Void event) {
+                    final String secretPathString = routingContext.request().getParam("secret_path");
+                    mLogger.trace("secretPathString = " + secretPathString);
+                    mImageAPI.getOriginUrl(secretPathString, new Consumer<String>() {
+                        @Override
+                        public void accept(String resultString) {
+                            if (StringUtils.isEmpty(resultString) == true) {
+                                responseHttpError(routingContext, 400, "Bad Request (Invalid Secret Path)");
+                            } else {
+                                responseHttpOK(routingContext, resultString);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        // POST /image/secret
+        //
+        // {
+        //   "data" : [
+        //     {"originPath":"originPath1", "expires":10},
+        //     {"originPath":"originPath2", "expires":20}
+        //   ]
+        // }
+        router.route().method(HttpMethod.POST).path("/image/secret").handler(routingContext -> {
+            routingContext.request().setExpectMultipart(true);
+            routingContext.request().bodyHandler(new Handler<Buffer>() {
+                @Override
+                public void handle(Buffer event) {
+                    // Get Body Data
+                    String body = event.toString();
+
+                    // Parse Parameters
+                    ArrayList<HashMap<String, Object>> parameterList = new ArrayList<>();
+                    try {
+                        JsonObject jsonObject = new JsonObject(body);
+                        JsonArray jsonArray = jsonObject.getJsonArray("data");
+                        for (int i = 0; i < jsonArray.size(); i++) {
+                            HashMap<String, Object> parameter = new HashMap<>();
+                            JsonObject param = jsonArray.getJsonObject(i);
+
+                            // Secret Path
+                            String secretPath = param.getString("secretPath", "");
+                            parameter.put("secretPath", secretPath);
+
+                            // Origin Path
+                            String originPath = param.getString("originPath", "");
+                            parameter.put("originPath", originPath);
+
+                            // Expired
+                            int expires = 0;
+                            try {
+                                expires = param.getInteger("expires", 0);
+                            } catch (Exception e) {
+                                String temp = param.getString("expires", "0");
+                                expires = Integer.valueOf(temp);
+                            }
+                            parameter.put("expires", expires);
+
+                            // End
+                            parameterList.add(parameter);
+                            if (StringUtils.isEmpty(secretPath) || StringUtils.isEmpty(originPath) || expires == 0) {
+                                responseHttpError(routingContext, 400, "Bad Request");
+                                return;
+                            }
+                        }
+                    } catch (Exception e) {
+                        mLogger.error("error : " + e);
+                    }
+
+                    // End
+                    mImageAPI.createSecretUrl(parameterList, new Consumer<String>() {
+                        @Override
+                        public void accept(String result) {
+                            mLogger.trace("result : " + result);
+                            responseHttpOK(routingContext, result);
+                        }
+                    });
+                }
+            });
+        });
+    }
+
 
     /**
      * Parse path
