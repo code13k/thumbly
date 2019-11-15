@@ -46,7 +46,7 @@ public class Util {
      * Get size of cache directory
      */
     public static long sizeOfCacheDirectory(String path) {
-        String output = execute("du -k -d 0 " + path);
+        String output = execute("du -k --max-depth=0 " + path);
         String[] resultArray = StringUtils.split(output, "\t");
 
         // Log
